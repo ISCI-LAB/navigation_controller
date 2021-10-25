@@ -57,6 +57,7 @@ private:
 	geometry_msgs::Twist last_cmd_;
 	
 	std::string path_0 ;
+    std::string map_frame_id;
 	std_msgs::Bool cmd_switch;
 	
 	void get_scan(const sensor_msgs::LaserScan::ConstPtr& scan);
@@ -107,6 +108,8 @@ NavigationController::NavigationController(tf::TransformListener& tf) : tf_(tf)
 	//path_0 = "/home/nvidia/catkin_ws_syntechagv/src/navigation_controller/cmd_txt/cmd578.txt";
 	
 	ros::NodeHandle para_node("~");
+
+	para_node.param<std::string>("map_frame_id", map_frame_id, "odom");
 
 	// avoidance switch
 	if(!para_node.getParam("AvoidSwitch", switch_avoid)){
@@ -218,7 +221,7 @@ void NavigationController::run()
 		tf::StampedTransform transform;
 		tf::Quaternion q;
 		try {
-			tf_.lookupTransform("/vslam_map", "/base_link", ros::Time(0), transform);
+			tf_.lookupTransform(map_frame_id, "/base_link", ros::Time(0), transform);
 			q = transform.getRotation(); 
 		}
 		catch (tf::TransformException ex) {	
@@ -230,7 +233,7 @@ void NavigationController::run()
 		pos_status.data = "[pos_x : " + ToString(transform.getOrigin().x())+", pos_y : "+ToString(transform.getOrigin().y())+", theta : "+ToString(tf::getYaw(q))+" ]";
 		pos_status_pub.publish(pos_status);
 
-		ROS_ERROR("x= %.2f y=%.2f  theta=%.2f",transform.getOrigin().x(),transform.getOrigin().y(),tf::getYaw(q) * R2D);
+		ROS_INFO("x= %.2f y=%.2f  theta=%.2f",transform.getOrigin().x(),transform.getOrigin().y(),tf::getYaw(q) * R2D);
 
 		if(state_ == CONTROLLING || state_ == APPROACHING) {
 			v_t = 0.0;
