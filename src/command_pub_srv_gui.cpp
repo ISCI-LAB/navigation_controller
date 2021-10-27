@@ -27,7 +27,6 @@ CommandPubSrvGui::CommandPubSrvGui()
     client_ = nh_.serviceClient < navigation_controller::command > ("pos_cmd");
 
     flag_switch = nh_.advertise < std_msgs::Bool > ("yourturn", 1);
-    //cmd_switch.data
 }
 
 CommandPubSrvGui::~CommandPubSrvGui()
@@ -65,10 +64,6 @@ void CommandPubSrvGui::get_place(const std_msgs::String::ConstPtr& place)
         } else if (num == 2) {
             myfile >> x >> y;
             wait = 0;
-            //if(x==0&&y==0)
-            //	wait=0;
-            //else
-            //	wait=1.5;
         } else if (num == 0) {
             continue;
         }
@@ -94,7 +89,6 @@ void CommandPubSrvGui::get_place(const std_msgs::String::ConstPtr& place)
     cmd_switch.data = true;
     for (int i = 0; i < 3; i++) {
         flag_switch.publish(cmd_switch);
-        //ROS_ERROR("-----------------------------------FUCK");
         ros::Duration(1.0).sleep();
     }
 }

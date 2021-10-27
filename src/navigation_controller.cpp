@@ -101,8 +101,6 @@ NavigationController::NavigationController(tf::TransformListener& tf) : tf_(tf)
     command_type_ = 0;
     state_ = FINISH;
 
-    //path_0 = "/home/nvidia/catkin_ws_syntechagv/src/navigation_controller/cmd_txt/cmd578.txt";
-
     ros::NodeHandle para_node("~");
 
     para_node.param < std::string > ("map_frame_id", map_frame_id, "odom");
@@ -259,19 +257,9 @@ void NavigationController::run()
             if ((v_n != 0.0) || (w_n != 0.0)) {
                 avoid_radiate(&v_a, &w_a, v_n, w_n, obs_r, obs_theta, minrange);
 
-                //v_t = v_n * G_u + v_a * G_r;
-                //v_t = v_n * G_u;
-                //w_t = w_n * G_u + w_a * G_r;
                 v_t = v_a;
                 w_t = w_a;
-                if (v_n != 0) {
-                    //w_t = w_t * v_n / v_t;
-                    //v_t = v_n;
-                } else if (v_n == 0) {
-                    //w_t = w_n;
-                }
             }
-            //ROS_INFO_STREAM("v_t = " << v_t << " w_t = " << w_t);
         }
 
         double acc_v = 0.05;
@@ -346,8 +334,9 @@ void NavigationController::get_obstacle_vector(double *obs_r, double *obs_theta,
                 beam_minrange_2[i] = std::min(beam_minrange_2[i], (double)std::max((scan_.ranges[j] - adjust_2), 0.0));
             }
         }
-        //ROS_INFO_STREAM("beam_minrange_1 is " << beam_minrange[i]);
-        //ROS_INFO_STREAM("beam_minrange_2 is " << beam_minrange_2[i]);
+        // For debug
+        // ROS_INFO_STREAM("beam_minrange_1 is " << beam_minrange[i]);
+        // ROS_INFO_STREAM("beam_minrange_2 is " << beam_minrange_2[i]);
         if ((beam_minrange[i] == 0.0) && (beam_minrange_2[i] > 0.05)) {
             if (switch_avoid == true) {
                 beam_minrange[i] = beam_minrange_2[i] - 0.2;
@@ -361,7 +350,6 @@ void NavigationController::get_obstacle_vector(double *obs_r, double *obs_theta,
         if (beam_minrange[i] != 0.0)
             *minrange = std::min(*minrange, beam_minrange[i]);
     }
-    //-------------------------------------------------
     double obs_vector_x = 0.0;
     double obs_vector_y = 0.0;
 
@@ -385,7 +373,6 @@ void NavigationController::get_obstacle_vector(double *obs_r, double *obs_theta,
         *obs_theta = atan2(obs_vector_y, obs_vector_x);
     }
     //ROS_INFO_STREAM("obs_count " << obs_count << " obs_r " << *obs_r << " obs_theta : " << *obs_theta);
-    //------------------------------------------------
     mark_array_.markers.clear();
 
     visualization_msgs::Marker marker;
@@ -404,7 +391,6 @@ void NavigationController::get_obstacle_vector(double *obs_r, double *obs_theta,
     marker.color.g = 1.0;
     marker.color.b = 1.0;
     marker.color.a = 1.0;
-
 
     for (int i = 0; i < beam_num; i++) {
         char temp[50];
@@ -446,8 +432,6 @@ void NavigationController::avoid_radiate(double *v_a, double *w_a, double user_v
         Ea = pow(std::min(minrange / kAvoidRadius_, 1.0), 0.2);
     else
         Ea = pow(std::min(pow(minrange / kAvoidRadius_, 2), 1.0), 0.2);
-    //ROS_INFO_STREAM("Ea = " << Ea);
-    //double Ea = 1
 
     // Status:: obstacle topic
     if (Ea >= 0.85)
@@ -493,7 +477,6 @@ void NavigationController::avoid_radiate(double *v_a, double *w_a, double user_v
                 *w_a = *w_a / fabs(*w_a) * fabs(MaxRobotAngularVelocity);
         } else {
             *v_a = 0;
-            //*w_a = 0;
             if (Ea > 0) {
                 if ((obs_theta >= 0.0) && (obs_r != 0))
                     *w_a = user_rotation * Ea + (*v_a) / minrange * -1.0 * (1 - Ea);
