@@ -7,16 +7,18 @@
 
   <!--navigation controller-->
   <node name="calculat_navigation_cmd" pkg="navigation_controller"  type="navigation_controller" output="screen">
-  	<param name="AvoidSwitch" value="true" />   
+  	<param name="AvoidSwitch" value="true" />
   	<param name="map_frame_id" value="odom" />
-	<remap from="cmd_vel" to="cmd_vel_mux/input/safety_controller"/>
+	  <remap from="cmd_vel" to="cmd_vel_mux/input/safety_controller"/>
   </node>
 
   <!--<node name="guide_control" pkg="guide_control"  type="guide_control_gui" output="screen">
   </node>-->
 
   <!-- read file.txt for pos command-->
-  <node name="send_navigation_cmd" pkg="navigation_controller" type="command_pub_srv_gui" output="screen"/>
+  <node name="send_navigation_cmd" pkg="navigation_controller" type="command_pub_srv_gui" output="screen">
+  	<param name="cmd_txt_folder" value="$(find navigation_controller)/cmd_txt/cmd" />
+  </node>
   <node name="get_vslam_state" pkg="navigation_controller" type="get_vslam_pose" output="screen"/>
 
 </launch>

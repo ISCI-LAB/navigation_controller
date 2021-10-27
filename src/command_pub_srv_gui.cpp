@@ -18,11 +18,16 @@ private:
     ros::Publisher flag_switch;
     std_msgs::Bool cmd_switch;
 
+    std::string cmd_txt_folder;
+
     void get_place(const std_msgs::String::ConstPtr& place);
 };
 
 CommandPubSrvGui::CommandPubSrvGui()
 {
+    ros::NodeHandle param_node("~");
+
+    param_node.param < std::string > ("cmd_txt_folder", cmd_txt_folder, "/home/locobot/low_cost_ws_my/src/pyrobot/robots/LoCoBot/navigation_controller/cmd_txt/cmd");
     place_cmd_ = nh_.subscribe < std_msgs::String > ("place", 1000, boost::bind(&CommandPubSrvGui::get_place, this, _1));
     client_ = nh_.serviceClient < navigation_controller::command > ("pos_cmd");
 
@@ -42,7 +47,7 @@ void CommandPubSrvGui::get_place(const std_msgs::String::ConstPtr& place)
     double theta = 0.0;
     navigation_controller::command srv;
 
-    std::string path = "/home/locobot/low_cost_ws_my/src/pyrobot/robots/LoCoBot/navigation_controller/cmd_txt/cmd" + place->data + ".txt";
+    std::string path = cmd_txt_folder + place->data + ".txt";
     std::fstream myfile;
 
     myfile.open(path.c_str());
