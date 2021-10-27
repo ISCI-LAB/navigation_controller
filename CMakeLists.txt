@@ -201,18 +201,6 @@ add_executable(command_pub_srv_gui src/command_pub_srv_gui.cpp)
 target_link_libraries(command_pub_srv_gui ${catkin_LIBRARIES})
 add_dependencies(command_pub_srv_gui ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-add_executable(command_pub_srv src/command_pub_srv.cpp)
-target_link_libraries(command_pub_srv ${catkin_LIBRARIES})
-add_dependencies(command_pub_srv ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(command_pub_srv_call src/command_pub_srv_call.cpp)
-target_link_libraries(command_pub_srv_call ${catkin_LIBRARIES})
-add_dependencies(command_pub_srv ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(command_pub src/command_pub.cpp)
-target_link_libraries(command_pub ${catkin_LIBRARIES})
-add_dependencies(command_pub ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
 add_executable(navigation_controller src/navigation_controller.cpp)
 target_link_libraries(navigation_controller ${catkin_LIBRARIES})
 add_dependencies(navigation_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -220,12 +208,3 @@ add_dependencies(navigation_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${cat
 add_executable(get_vslam_pose src/get_vslam_pose.cpp)
 target_link_libraries(get_vslam_pose ${catkin_LIBRARIES})
 add_dependencies(get_vslam_pose ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(L1_controller_v2 src/L1_controller_v2.cpp)
-target_link_libraries(L1_controller_v2 ${catkin_LIBRARIES})
-add_dependencies(L1_controller_v2 navigation_controller_generate_messages_cpp)
-
-add_executable(L1_controller_v2_0 src/L1_controller_v2_0.cpp)
-target_link_libraries(L1_controller_v2_0 ${catkin_LIBRARIES})
-add_dependencies(L1_controller_v2_0 navigation_controller_generate_messages_cpp)
-
