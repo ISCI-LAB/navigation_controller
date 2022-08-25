@@ -1,8 +1,9 @@
 <launch>
+  <arg name="map_frame_id" default="odom"/>
   <!--navigation controller-->
   <node name="calculat_navigation_cmd" pkg="navigation_controller"  type="navigation_controller" output="screen">
   	<param name="AvoidSwitch" value="true" />
-  	<param name="map_frame_id" value="odom" />
+  	<param name="map_frame_id" value="$(arg map_frame_id)" />
 	  <remap from="cmd_vel" to="cmd_vel_mux/input/safety_controller"/>
   </node>
 
