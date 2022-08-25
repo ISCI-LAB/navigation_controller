@@ -30,7 +30,7 @@ class SampleClient(object):
 
     # two stage navigation, first transition and then rotation
     def send_goal(self, goal_x, goal_y, goal_theta):
-        resp = self.pos_cmd_request(2, goal_x, goal_y, 0)
+        self.pos_cmd_request(2, goal_x, goal_y, 0)
         goal_achived = self.loop_service_confirm()
 
         if not goal_achived:
@@ -38,7 +38,7 @@ class SampleClient(object):
             return False
 
         self.pos_cmd_request(1, 0, 0, goal_theta)
-        goal_achive = self.loop_service_confirm()
+        goal_achived = self.loop_service_confirm()
 
         return goal_achived
 
