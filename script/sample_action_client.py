@@ -2,7 +2,7 @@ import rospy
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import numpy as np
 import actionlib
-from geometry_msgs.msg import PoseStamped
+import tf
 
 
 class SampleClient(object):
@@ -11,11 +11,17 @@ class SampleClient(object):
             "navigation_controller/send_goal",
             MoveBaseAction)
         self.client.wait_for_server()
-        self.goal_sub = rospy.Subscriber('demo_goal', PoseStamped, self.demo_cb, queue_size=1)
 
-    def demo_cb(self, pose):
+    def async_send_goal(self, goal_x, goal_y, theta):
+        theta_quat = tf.transformations.quaternion_from_euler(0., 0., theta)
         goal = MoveBaseGoal()
-        goal.target_pose = pose
+        goal.target_pose.pose.position.x = goal_x
+        goal.target_pose.pose.position.y = goal_y
+        goal.target_pose.pose.position.z = 0.
+        goal.target_pose.pose.orientation.x = theta_quat[0]
+        goal.target_pose.pose.orientation.y = theta_quat[1]
+        goal.target_pose.pose.orientation.z = theta_quat[2]
+        goal.target_pose.pose.orientation.w = theta_quat[3]
         self.client.send_goal(goal)
         print("wait for result")
         self.client.wait_for_result()
